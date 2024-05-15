@@ -43,5 +43,8 @@ def get_video_details(bvid):
 
 
 if __name__ == "__main__":
-    bvid = "BV1SU411Z7xm"
+    bvid = "BV17x411w7KC"
+    
+    # bvid = "BV17x411w7KC"
+    
     print(get_video_details(bvid))
