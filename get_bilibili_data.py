@@ -3,6 +3,7 @@ import qrcode
 import re
 from time import sleep
 import xml.etree.ElementTree as ET
+import pandas as pd
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
@@ -75,7 +76,7 @@ def filter_video_info(video_info):
         }
         return video_infos
     else:
-        return None 
+        return None
 
 def get_video_data(bvid):
     # Get the video information
@@ -97,17 +98,19 @@ def get_video_comment(bid):
     # print(f"正在从{aid_}解析网址aid")
     aid = tmp_data['data']['aid']
     comment = []
+    like = []
     pre_comment_length = 0
-    i=0
-    print("开始爬取评论")
+    i = 0
     while True:
         url = f"https://api.bilibili.com/x/v2/reply/main?csrf=40a227fcf12c380d7d3c81af2cd8c5e8&mode=3&next={i}" \
             f"&oid={aid}&plat=1&type=1"
         try:
             responses = requests.get(url=url.format(i), headers=HEADERS).json()
-            i+=1
+            # print(responses)
+            i += 1
             for content in responses["data"]["replies"]:
                 comment.append(content["content"]["message"])
+                like.append(content['like'])
             print("搜集到%d条评论" % (len(comment)))
             # 调整爬虫策略，从必须每20条评论调整成上一次评论数和这一次评论数进行比较，如果有改变说明有新数据，如果没改变说明数据全部搜集完毕，爬虫停止
             if len(comment) == pre_comment_length:
@@ -118,9 +121,11 @@ def get_video_comment(bid):
         except Exception as e:
             print(e)
             break
-    with open("comment.txt", "w", encoding="utf-8") as fp:
-        for c in comment:
-            fp.write(c + "\n")
+    # Combine the comment and like use dataframe
+    comment_like = pd.DataFrame({"comment": comment, "like": like})
+    # Export xlsx file
+    comment_like.to_excel("comment.xlsx", index=False)
+
     print("评论爬取完毕")
     return comment
 
@@ -136,11 +141,14 @@ def get_video_dm(cid):
     response = requests.get(dm_url, headers=HEADERS)
     danmu=parse_xml(response.content)
     print("弹幕爬取完毕")
-    return danmu 
+    return danmu
+
 
 def parse_xml(xml_text):
+    # Parse the xml text and time stamp
     root = ET.fromstring(xml_text)
-    danmu=[]
+    danmu = []
+    # Write the danmu to a file
     with open('danmu.txt', 'w', encoding='utf-8') as file:
         for d in root.findall('d'):
             file.write(d.text + '\n')
@@ -150,7 +158,8 @@ def parse_xml(xml_text):
 def get_data(bvid):
     return get_video_data(bvid),get_video_comment(bvid),get_video_dm(get_cid(bvid))
 
-if __name__ == '__main__':
     # bvid = 'BV1Jh411Y7f6'
-    bvid = 'BV117411r7R1'
+
+if __name__ == '__main__':
+    bvid = 'BV1AH4y1376o'
     video_info,video_comment,video_danmu=get_data(bvid)
