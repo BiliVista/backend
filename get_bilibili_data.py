@@ -7,7 +7,7 @@ import pandas as pd
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-    'cookie':"buvid3=157B584A-E63D-0168-7DFA-767E9B9C54C862030infoc; b_nut=1708437762; i-wanna-go-back=-1; b_ut=7; _uuid=A9B5249B-DDF1-CC910-1E2B-E310C6D91A9CA62352infoc; buvid_fp=5acc377b1e17e95839e6c165bf8a1553; enable_web_push=DISABLE; buvid4=7386F889-F4FA-1E4B-F015-C0CACCBFDD1A63132-024022014-Uz5bLrdgm9Lr%2FbmDKGUepg%3D%3D; DedeUserID=74214360; DedeUserID__ckMd5=d0b23f38ca212bbd; rpdid=|(u))l|ml~um0J'u~|)RJ~)mu; header_theme_version=CLOSE; hit-dyn-v2=1; FEED_LIVE_VERSION=V_WATCHLATER_PIP_WINDOW3; LIVE_BUVID=AUTO9117094820993473; home_feed_column=5; is-2022-channel=1; CURRENT_BLACKGAP=0; CURRENT_FNVAL=4048; bp_video_offset_74214360=924741733424562193; fingerprint=7c670eb0db7daf16c7a7ae0436cfe1d1; browser_resolution=1512-823; CURRENT_QUALITY=80; SESSDATA=1a7fa502%2C1731167233%2C4cae8%2A52CjCTNN-vaEjTnK05NyZZkobNWv_us8W0xKj-7zSPS8nd4pNuZOmpprPNgyGYcum1BJwSVjJ3aVdfVXBDZldLWVZOZzl1OVRUc0VxbnhHZUQwWklSX21IY0Q3Y2VzZ1lTV01OUmx5S1FhWjFtcTZ3WVRsUk9pMENlX1FKYnZCYi1weTVGR3duVllRIIEC; bili_jct=10152f9f167ba3a986cd75523232a176; sid=4p1842mc; bili_ticket=eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTYwMzczNzIsImlhdCI6MTcxNTc3ODExMiwicGx0IjotMX0.5Eyk7aO3FxqroW5EQ6LQ0FIDx-OTCU8UAcvK83zkECU; bili_ticket_expires=1716037312; PVID=2; bp_t_offset_74214360=931793198082162743; b_lsid=CBF1083DB_18F7D4EC04A"
+    'cookie':"buvid4=F945309E-15D7-20B9-E26B-AD693B6419B120027-022081210-V5ICQHqi6LAgNmQ2DE3bVg%3D%3D; header_theme_version=CLOSE; buvid3=DC77DCDC-CC49-D057-0CA7-86F7D5472C5D44733infoc; b_nut=1693380444; _uuid=64F3D312-BF2E-C1048-54E3-2CD5D107C33EF44395infoc; buvid_fp_plain=undefined; buvid_fp=4aa4d5ca784866ab23c5a0a167f0776a; enable_web_push=DISABLE; FEED_LIVE_VERSION=V8; rpdid=|(J~RYuku))k0J'u~uJJRmJY|; CURRENT_QUALITY=116; bp_t_offset_356652086=932057742045085766; fingerprint=636c04d6b54ef85dd030a7b5e6207f0b; bili_ticket=eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTYxMTA3NDgsImlhdCI6MTcxNTg1MTQ4OCwicGx0IjotMX0.H-5h4IVV4fcxwwQOeSKewdn4-BuHJAZoW2qPsfkLzcs; bili_ticket_expires=1716110688; SESSDATA=98463e4c%2C1731403644%2Cf1734%2A51CjCIip3xJ2PJgIJc0wcPrhmkCQkbiPHlUfjUyYj3JUapt_Hj4BD1aNI_nbc21Eo4aGYSVklfTWsySDVPeTBRTE12WndleXpxWld1bi1waXpsbGJwYXhScFdORy1LMzdfYzJKYTFhU0ZUVjBKZU13dmg1Nl9NamVlMTQ2LVZ4VVJpcG5LYkNLTU9RIIEC; bili_jct=c869262e07000a7a2e4642a17ecf23fe; DedeUserID=375458937; DedeUserID__ckMd5=946b0c50e277d569; is-2022-channel=1; CURRENT_BLACKGAP=0; CURRENT_FNVAL=4048; PVID=3; b_lsid=5B68F10F4_18F8CFED314; bsource=search_baidu; bp_t_offset_375458937=932945962801823797; home_feed_column=4; browser_resolution=1001-945",
 }
 
 # Set up the API endpoint
@@ -157,9 +157,7 @@ def parse_xml(xml_text):
 
 def get_data(bvid):
     return get_video_data(bvid),get_video_comment(bvid),get_video_dm(get_cid(bvid))
-
-    # bvid = 'BV1Jh411Y7f6'
-
 if __name__ == '__main__':
-    bvid = 'BV1AH4y1376o'
+    bvid='BV1ct421u7gu'
+    # HEADERS=update_headers_with_cookies(HEADERS)
     video_info,video_comment,video_danmu=get_data(bvid)

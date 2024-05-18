@@ -32,6 +32,8 @@ def Calculate_sentiment2(file_path):
     # Drop rows with missing values
     df['comment'] = df['comment'].fillna('')
     df = df.dropna()
+    # Transform all the comments to string
+    df['comment'] = df['comment'].astype(str)
     df['sentiment'] = df['comment'].apply(lambda x: SnowNLP(x).sentiments)
     return df
 
@@ -54,16 +56,4 @@ if __name__ == "__main__":
     # sentiment times like sum
     mean_sentiment = df1['sentiment_like'].sum() / sum_like
     print(mean_sentiment)
-    # Export xlsx file
-    # print(df1.head(10))
-    # df1.to_excel("comment.xlsx", index=False)
-    # # df2 = Calculate_sentiment('danmu.txt')
-    # print(df1['sentiment'].mean())
-    # # print(df2['sentiment'].mean())
     draw_hist(df1)
-    # # draw_hist(df2)
-    # print(df1[(df1['sentiment'] < 0.1)].head(10))
-    # print(df2[(df2['sentiment'] <0.1)].head(10))
-    # print(df1[(df1['sentiment'] > 0.9)].head(10))
-    # print(df2[(df2['sentiment'] > 0.9)].head(10))
-    # print(df[(df['sentiment'] > 0.9)])
