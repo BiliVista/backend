@@ -4,6 +4,7 @@ import re
 from time import sleep
 import xml.etree.ElementTree as ET
 import pandas as pd
+import json
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
@@ -59,22 +60,34 @@ def get_video_info(bvid):
 def filter_video_info(video_info):
     if video_info:
         data = video_info['data']
-        video_infos = {
-            "标题": data['View']['title'],                # title	str	视频标题
-            "视频图片": data['View']['pic'],               # pic	str	视频封面         
-            "播放量": data['View']['stat']['view'],         # view num	播放数
-            "弹幕量": data['View']['stat']['danmaku'],      # danmaku num	弹幕数
-            "评论数": data['View']['stat']['reply'],        # repl num	评论数	
-            "收藏人数": data['View']['stat']['favorite'],   # favorit num	收藏数	
-            "投硬币枚数": data['View']['stat']['coin'],     # coin num	投币数	
-            "分享数": data['View']['stat']['share'],       # share num	分享数	
-            "获赞数": data['View']['stat']['like'],        # like	num	获赞数	
-            "当前排名": data['View']['stat']['now_rank'],   # now_rank	num	当前排名
-            "历史最高排行": data['View']['stat']['his_rank'], # his_rank	num	历史最高排行
-            "视频作者": data['View']['owner']['name'],     # name	str	作者名
-            "视频评分": data['View']['stat']['evaluation']  # evaluation	str	视频评分
-        }
-        return video_infos
+        video_info = {}
+        video_info['title'] = data['View']['title']
+        video_info['pic'] = data['View']['pic']
+        video_info['view'] = data['View']['stat']['view']
+        video_info['danmaku'] = data['View']['stat']['danmaku']
+        video_info['reply'] = data['View']['stat']['reply']
+        video_info['favorite'] = data['View']['stat']['favorite']
+        video_info['coin'] = data['View']['stat']['coin']
+        video_info['share'] = data['View']['stat']['share']
+        video_info['like'] = data['View']['stat']['like']
+        video_info['author'] = data['View']['owner']['name']
+        # Put the dict into a new dict
+        # video_infos = {
+        #     "标题": data['View']['title'],                # title	str	视频标题
+        #     "视频图片": data['View']['pic'],               # pic	str	视频封面         
+        #     "播放量": data['View']['stat']['view'],         # view num	播放数
+        #     "弹幕量": data['View']['stat']['danmaku'],      # danmaku num	弹幕数
+        #     "评论数": data['View']['stat']['reply'],        # repl num	评论数	
+        #     "收藏人数": data['View']['stat']['favorite'],   # favorit num	收藏数	
+        #     "投硬币枚数": data['View']['stat']['coin'],     # coin num	投币数	
+        #     "分享数": data['View']['stat']['share'],       # share num	分享数	
+        #     "获赞数": data['View']['stat']['like'],        # like	num	获赞数	
+        #     "当前排名": data['View']['stat']['now_rank'],   # now_rank	num	当前排名
+        #     "历史最高排行": data['View']['stat']['his_rank'], # his_rank	num	历史最高排行
+        #     "视频作者": data['View']['owner']['name'],     # name	str	作者名
+        #     "视频评分": data['View']['stat']['evaluation']  # evaluation	str	视频评分
+        # }
+        return video_info
     else:
         return None
 
@@ -82,13 +95,20 @@ def get_video_data(bvid):
     # Get the video information
     print("开始爬取视频信息")
     video_info = get_video_info(bvid)
-    video_infos = filter_video_info(video_info)
+    video_info = filter_video_info(video_info)
+    # print(video_info)
+    try: # Read the json file
+        with open('videos_infos.json') as f:
+            # Add the new video info to the dict
+            videos_infos = json.load(f)
+            videos_infos[bvid] = video_info
+    except:
+        videos_infos = {bvid: video_info}
+    # Write the dict to the json file
+    with open('videos_infos.json', 'w') as f:
+        json.dump(videos_infos, f)
     print("视频信息爬取完毕")
-    # export the video information to a file
-    with open("video_info.txt", "w", encoding="utf-8") as fp:
-        for key, value in video_infos.items():
-            fp.write(key + ": " + str(value) + "\n")
-    return video_infos
+    return video_info
 
 
 def get_video_comment(bid):
@@ -125,7 +145,15 @@ def get_video_comment(bid):
     comment_like = pd.DataFrame({"comment": comment, "like": like})
     # Export xlsx file
     comment_like.to_excel("comment.xlsx", index=False)
-
+    # store the comment and like to json file which key is bvid
+    try:
+        with open('comment_like.json') as f:
+            comment_like_dict = json.load(f)
+            comment_like_dict[bid] = comment_like.to_dict(orient='records') # orient='records' means the dict is like [{column -> value}, ... , {column -> value}]
+    except:
+        comment_like_dict = {bid: comment_like.to_dict(orient='records')}
+    with open('comment_like.json', 'w') as f:
+        json.dump(comment_like_dict, f)
     print("评论爬取完毕")
     return comment
 
@@ -139,7 +167,19 @@ def get_video_dm(cid):
     cid = str(cid)
     dm_url = f"https://comment.bilibili.com/{cid}.xml"
     response = requests.get(dm_url, headers=HEADERS)
+    #store the danmu to xml file
+    # with open('danmu.xml', 'wb') as file:
+    #     file.write(response.content)
     danmu=parse_xml(response.content)
+    # store the danmu to json file which key is bvid
+    try:
+        with open('videos_danmus.json') as f:
+            danmu_dict = json.load(f)
+            danmu_dict[bvid] = danmu
+    except:
+        danmu_dict = {bvid: danmu}
+    with open('videos_danmus.json', 'w') as f:
+        json.dump(danmu_dict, f)
     print("弹幕爬取完毕")
     return danmu
 
@@ -147,13 +187,22 @@ def get_video_dm(cid):
 def parse_xml(xml_text):
     # Parse the xml text and time stamp
     root = ET.fromstring(xml_text)
-    danmu = []
-    # Write the danmu to a file
-    with open('danmu.txt', 'w', encoding='utf-8') as file:
-        for d in root.findall('d'):
-            file.write(d.text + '\n')
-            danmu.append(d.text)
-    return danmu
+    danmaku_list = []
+    for d in root.findall('d'):
+        p_attr = d.get('p')
+        text = d.text
+        time, type_, font_size, color, timestamp, _, _, _, layer = p_attr.split(',')
+        danmaku = {
+            'time': float(time),
+            'type': int(type_),
+            'font_size': int(font_size),
+            'color': int(color),
+            'timestamp': int(timestamp),
+            'layer': int(layer),
+            'text': text
+        }
+        danmaku_list.append(danmaku)
+    return danmaku_list
 
 def get_data(bvid):
     return get_video_data(bvid),get_video_comment(bvid),get_video_dm(get_cid(bvid))
