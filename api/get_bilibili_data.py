@@ -8,7 +8,7 @@ import json
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36',
-    'cookie':"buvid4=F945309E-15D7-20B9-E26B-AD693B6419B120027-022081210-V5ICQHqi6LAgNmQ2DE3bVg%3D%3D; header_theme_version=CLOSE; buvid3=DC77DCDC-CC49-D057-0CA7-86F7D5472C5D44733infoc; b_nut=1693380444; _uuid=64F3D312-BF2E-C1048-54E3-2CD5D107C33EF44395infoc; buvid_fp_plain=undefined; buvid_fp=4aa4d5ca784866ab23c5a0a167f0776a; enable_web_push=DISABLE; FEED_LIVE_VERSION=V8; rpdid=|(J~RYuku))k0J'u~uJJRmJY|; CURRENT_QUALITY=116; bp_t_offset_356652086=932057742045085766; fingerprint=636c04d6b54ef85dd030a7b5e6207f0b; bili_ticket=eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTYxMTA3NDgsImlhdCI6MTcxNTg1MTQ4OCwicGx0IjotMX0.H-5h4IVV4fcxwwQOeSKewdn4-BuHJAZoW2qPsfkLzcs; bili_ticket_expires=1716110688; SESSDATA=98463e4c%2C1731403644%2Cf1734%2A51CjCIip3xJ2PJgIJc0wcPrhmkCQkbiPHlUfjUyYj3JUapt_Hj4BD1aNI_nbc21Eo4aGYSVklfTWsySDVPeTBRTE12WndleXpxWld1bi1waXpsbGJwYXhScFdORy1LMzdfYzJKYTFhU0ZUVjBKZU13dmg1Nl9NamVlMTQ2LVZ4VVJpcG5LYkNLTU9RIIEC; bili_jct=c869262e07000a7a2e4642a17ecf23fe; DedeUserID=375458937; DedeUserID__ckMd5=946b0c50e277d569; is-2022-channel=1; CURRENT_BLACKGAP=0; CURRENT_FNVAL=4048; PVID=3; b_lsid=5B68F10F4_18F8CFED314; bsource=search_baidu; bp_t_offset_375458937=932945962801823797; home_feed_column=4; browser_resolution=1001-945",
+    'cookie':"buvid3=157B584A-E63D-0168-7DFA-767E9B9C54C862030infoc; b_nut=1708437762; i-wanna-go-back=-1; b_ut=7; _uuid=A9B5249B-DDF1-CC910-1E2B-E310C6D91A9CA62352infoc; buvid_fp=5acc377b1e17e95839e6c165bf8a1553; enable_web_push=DISABLE; buvid4=7386F889-F4FA-1E4B-F015-C0CACCBFDD1A63132-024022014-Uz5bLrdgm9Lr%2FbmDKGUepg%3D%3D; DedeUserID=74214360; DedeUserID__ckMd5=d0b23f38ca212bbd; rpdid=|(u))l|ml~um0J'u~|)RJ~)mu; header_theme_version=CLOSE; hit-dyn-v2=1; FEED_LIVE_VERSION=V_WATCHLATER_PIP_WINDOW3; LIVE_BUVID=AUTO9117094820993473; is-2022-channel=1; CURRENT_BLACKGAP=0; bp_video_offset_74214360=924741733424562193; fingerprint=7c670eb0db7daf16c7a7ae0436cfe1d1; CURRENT_QUALITY=80; SESSDATA=88653f34%2C1731427373%2Cd3385%2A52CjCg17Wlhr7NpqkSuR_AdyWIMTtL8_AX4tRE8S5wxm0mpCkig-02OJhPiVyiSH1KmmcSVi1jLWI5N1lIell6ZzJaRkdUeHdJMVFSb2FzS2VkTUtsalI3d3RWMTlxSFVUdDZQNjNibjBaTXBzNFVHOW1CRkdMN2N1NFVmMzBrZzhoRTFjUFZmam1RIIEC; bili_jct=c7c54a35738c381536a94edf10a4b778; bmg_af_switch=1; bmg_src_def_domain=i0.hdslb.com; home_feed_column=5; browser_resolution=1512-823; sid=7pipgj59; bili_ticket=eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTYyOTcyODYsImlhdCI6MTcxNjAzODAyNiwicGx0IjotMX0.JdlLe_dd_BnN8kO2j1gifMa6wcpM9dye_698PouxTH4; bili_ticket_expires=1716297226; bp_t_offset_74214360=932925385609314322; PVID=1; b_lsid=974D21043_18F8FEBB300; CURRENT_FNVAL=4048",
 }
 
 # Set up the API endpoint
@@ -29,8 +29,6 @@ def update_headers_with_cookies(HEADERS):
     img=qrcode.make(qr_url)
     img.show()
     pass_url="https://passport.bilibili.com/x/passport-login/web/qrcode/poll?qrcode_key="+qrcode_key
-
-    # 扫码成功后关闭弹窗
     response=requests.get(pass_url, headers=HEADERS)
     while response.json()['data']['message']=='未扫码':
         response = requests.get(pass_url, headers=HEADERS)
@@ -56,8 +54,7 @@ def get_video_info(bvid):
     else:
         return None
 
-# Filter the response to get the video information
-def filter_video_info(video_info):
+def filter_video_info(video_info): # Filter the response to get the video informatin
     if video_info:
         data = video_info['data']
         video_info = {}
@@ -76,33 +73,29 @@ def filter_video_info(video_info):
         return None
 
 def get_video_data(bvid):
-    # Get the video information
-    print("开始爬取视频信息")
+    print("开始爬取视频信息") 
     video_info = get_video_info(bvid)
-    video_info = filter_video_info(video_info)
-    # print(video_info)
-    try: # Read the json file
-        with open('data/videos_infos.json') as f:
-            # Add the new video info to the dict
+    video_info = filter_video_info(video_info) # Get the video information
+    try: 
+        with open('data/videos_infos.json') as f: # Read the json file
             videos_infos = json.load(f)
-            videos_infos[bvid] = video_info
+            videos_infos[bvid] = video_info # Add the new video info to the dict
     except:
         videos_infos = {bvid: video_info}
-    # Write the dict to the json file
-    with open('data/videos_infos.json', 'w') as f:
+    with open('data/videos_infos.json', 'w') as f: # Write the dict to the json file
         json.dump(videos_infos, f)
     print("视频信息爬取完毕")
     return video_info
 
-
+# Using thread to get the video comment
 def get_video_comment(bid):
     str = f"https://www.bilibili.com/video/{bid}"
     aid_ = f"https://api.bilibili.com/x/web-interface/view?bvid={bid}"
     tmp_data = requests.get(aid_, headers=HEADERS).json()
-    # print(f"正在从{aid_}解析网址aid")
-    aid = tmp_data['data']['aid']
+    aid = tmp_data['data']['aid'] # print(f"正在从{aid_}解析网址aid")
     comment = []
     like = []
+    sentiment=[]
     pre_comment_length = 0
     i = 0
     while True:
@@ -110,11 +103,11 @@ def get_video_comment(bid):
             f"&oid={aid}&plat=1&type=1"
         try:
             responses = requests.get(url=url.format(i), headers=HEADERS).json()
-            # print(responses)
             i += 1
             for content in responses["data"]["replies"]:
                 comment.append(content["content"]["message"])
                 like.append(content['like'])
+                sentiment.append(0)
             print("搜集到%d条评论" % (len(comment)))
             if len(comment) == pre_comment_length:
                 print("爬虫退出！！！")
@@ -125,14 +118,14 @@ def get_video_comment(bid):
             print(e)
             break
     # Combine the comment and like use dataframe
-    comment_like = pd.DataFrame({"comment": comment, "like": like})
+    comment_like = pd.DataFrame({"comment": comment, "like": like, "sentiment": sentiment})
     try:
-        with open('data/videos_comments.json') as f:
+        with open('data/videos_comments_res.json') as f:
             comment_like_dict = json.load(f)
             comment_like_dict[bid] = comment_like.to_dict(orient='records') # orient='records' means the dict is like [{column -> value}, ... , {column -> value}]
     except:
         comment_like_dict = {bid: comment_like.to_dict(orient='records')}
-    with open('data/videos_comments.json', 'w') as f:
+    with open('data/videos_comments_res.json', 'w') as f:
         json.dump(comment_like_dict, f)
     print("评论爬取完毕")
     return comment
