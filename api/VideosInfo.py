@@ -26,6 +26,18 @@ async def get_rank_by_type(type: str):
         return get_rank(type)
     return {"error": "Invalid type"}
 
+# like/view ratio
+@api_videos.get("/likeviewratio/")
+async def get_like_view_ratio():
+    like_view_ratio = []
+    for bvid in data_loader.videos_infos:
+        if data_loader.videos_infos[bvid]["view"] == 0:
+            like_view_ratio.append({"bvid": bvid, "ratio": 0, "title": data_loader.videos_infos[bvid]['title'], "author": data_loader.videos_infos[bvid]['author'], "pic": data_loader.videos_infos[bvid]['pic']})
+        else:
+            like_view_ratio.append({"bvid": bvid, "ratio": data_loader.videos_infos[bvid]["like"]/data_loader.videos_infos[bvid]["view"], "title": data_loader.videos_infos[bvid]['title'], "author": data_loader.videos_infos[bvid]['author'], "pic": data_loader.videos_infos[bvid]['pic']})
+    like_view_ratio = sorted(like_view_ratio, key=lambda x: x['ratio'], reverse=True)
+    return like_view_ratio
+
 @api_videos.get("/sentiment/rank/")
 async def get_sentimentRank():
     sentimentRanks = []
