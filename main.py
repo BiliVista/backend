@@ -8,9 +8,9 @@ import uvicorn
 # Create FastAPI instance
 app = FastAPI()
 
-app.include_router(api_video, prefix="/video", tags=["VideoInfo"])
-app.include_router(api_videos, prefix="/videos", tags=["VideosInfo"])
-app.include_router(api_new_video, prefix="/newvideo", tags=["NewVideo"])
+app.include_router(api_video, prefix="/api/video", tags=["VideoInfo"])
+app.include_router(api_videos, prefix="/api/videos", tags=["VideosInfo"])
+app.include_router(api_new_video, prefix="/api/newvideo", tags=["NewVideo"])
 
 # Router
 @app.get("/")

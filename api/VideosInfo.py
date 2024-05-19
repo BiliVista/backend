@@ -44,7 +44,21 @@ async def get_any_running():
     return {"status": "running" if check_running() else "finish"}
 
 
-# while 1:
-#     if(check_running()):
-#         print(1)
-#         break
+@api_videos.get("/topinfo/")
+async def get_top_info():
+    #  Retuen top view, bvid counts, top sentiment, comment counts
+    top_view= get_rank("view")[0] # Get the video with the most views
+    # Count comments number in each video add them together
+    all_comment_counts = sum([data_loader.videos_infos[bvid]["comment"] for bvid in data_loader.videos_infos])
+    # Count bvid number
+    bvid_counts = len(data_loader.videos_infos)
+    # Best sentiment
+    top_sentiment = get_rank("sentiment")[0]
+    return {"top_view": top_view, "all_comment_counts": all_comment_counts, "video_counts": bvid_counts, "top_sentiment": top_sentiment}
+
+@api_videos.get("/3lianCounts/")
+async def get_3lian_counts():
+    all_likes = sum([data_loader.videos_infos[bvid]["like"] for bvid in data_loader.videos_infos])
+    all_favorite = sum([data_loader.videos_infos[bvid]["favorite"] for bvid in data_loader.videos_infos])
+    all_coin = sum([data_loader.videos_infos[bvid]["coin"] for bvid in data_loader.videos_infos])
+    return {"like": all_likes, "favorite": all_favorite, "coin": all_coin}

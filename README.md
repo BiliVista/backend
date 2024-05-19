@@ -82,3 +82,8 @@ api_videos from VideosInfo.py
 #### Add New Video to Analysis
 
 api_new_video from NewVideo.py
+|Property|Description|API|
+|--|--|--|
+|infos|获取新视频的基本信息| `/newvideo/infos/?bvid=<bvid>`|
+|comments|获取新视频的评论信息| `/newvideo/comments/?bvid=<bvid>`|
+|danmu|获取新视频的弹幕信息| `/newvideo/danmu/?bvid=<bvid>`|
