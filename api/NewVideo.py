@@ -6,11 +6,11 @@ api_new_video = APIRouter()
 
 @api_new_video.get("/infos/")
 async def get_new_video_info(bvid: str):
-    async with data_loader.lock:
-        data_loader.isRunning[bvid] = True
-    video_info = await get_video_data(bvid) #Use thread to get video data
-    async with data_loader.lock:
-        data_loader.isRunning[bvid] = False
+    # async with data_loader.lock:
+        # data_loader.isRunning[bvid] = True
+    video_info = get_video_data(bvid) #Use thread to get video data
+    # async with data_loader.lock:
+        # data_loader.isRunning[bvid] = False
     return video_info
 
 @api_new_video.get("/comments/")
