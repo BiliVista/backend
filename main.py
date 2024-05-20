@@ -4,9 +4,18 @@ from api.VideoInfo import api_video
 from api.VideosInfo import api_videos 
 from api.get_bilibili_data import get_video_data, get_video_comment, get_video_dm
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 # Create FastAPI instance
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # 允许的源列表
+    allow_credentials=True,  # 允许携带 cookies
+    allow_methods=["*"],  # 允许的 HTTP 方法
+    allow_headers=["*"],  # 允许的 HTTP 请求头
+)
 
 app.include_router(api_video, prefix="/api/video", tags=["VideoInfo"])
 app.include_router(api_videos, prefix="/api/videos", tags=["VideosInfo"])
